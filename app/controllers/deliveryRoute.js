@@ -2,6 +2,7 @@ const json_error_response = require('json_error_response');
 const datetimeHelper = require('../helpers/datetime');
 const deliveryRouteService = require('../services//deliveryRoute');
 const camel = require('mongo_recursive_camelcase');
+const pagingHelper = require('../helpers/paging');
 
 const create = async (req, res, next) => {
     try {
@@ -49,7 +50,24 @@ const create = async (req, res, next) => {
 }
 
 const getAllRoutes = async (req, res, next) => {
-    return res.status(400).json(json_error_response.NotImplemented());
+    try {
+        let {
+            pageSize
+        } = pagingHelper.inputHandlerPageSize(req);
+        let findPromise = deliveryRouteService.find({});
+        findPromise.then((deliveryRoutes) => {
+            var {
+                nextPageId
+            } = pagingHelper.getNextPageItem(deliveryRoutes, pageSize, "next_page_id");
+            return res.json(
+                pagingHelper.pageResponse(pageSize, deliveryRoutes, nextPageId)
+            );
+        }, (err) => {
+            json_error_response.DefaultError(err, res);
+        });
+    } catch(err) {
+        json_error_response.DefaultError(err, res);
+    }
 }
 
 const getRouteById = async (req, res, next) => {
