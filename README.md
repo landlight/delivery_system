@@ -14,8 +14,11 @@
 
 ### Status Codes
 200 - Success
+
 400 - Bad Request
+
 404 - Not Found
+
 500 - Internal Server Error
 
 ## API LIST
@@ -28,7 +31,7 @@
   ### Success
   Status Code: 200
   Result : DeliverRouteObject
-  <code>
+  ```
   {
     "fromPath": "C",
     "toPath": "D",
@@ -37,7 +40,7 @@
     "updatedAt": "2020-06-30T16:28:23.247Z",
     "id": "5efb6827eeb79261e8f9660f"
   }
-  </code>
+  ```
 
 ### FindAll Delivery Route
 - GET /api/deliveryRoute/
@@ -48,7 +51,7 @@
   ### Success
   Status Code: 200
   Result : Array of DeliverRouteObject with pagingInfo
-  <code>
+  ```
   {
     "pageInformation": {
         "size": 20,
@@ -57,5 +60,5 @@
     "entities": [
     ]
   }
-  </code>
+  ```
 
