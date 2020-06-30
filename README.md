@@ -1,33 +1,34 @@
 # eko delivery_system
 
-# Prerequisites
+## Prerequisites
 
 - install mongodb 
 - install node 
 - npm install
 
-# START
+## START
 - npm run start
 
-# TEST
+## TEST
 - npm run test
 
-# Status Codes
+### Status Codes
 200 - Success
 400 - Bad Request
 404 - Not Found
 500 - Internal Server Error
 
-# API LIST
-# Create Delivery Route
+## API LIST
+### Create Delivery Route
 - POST /api/deliveryRoute/
   
-  # Input BODY (JSON Object)
+  ### Input BODY (JSON Object)
   { "deliveryRoute" : "CD3" }
 
-  # Success
+  ### Success
   Status Code: 200
   Result : DeliverRouteObject
+  <code>
   {
     "fromPath": "C",
     "toPath": "D",
@@ -36,3 +37,25 @@
     "updatedAt": "2020-06-30T16:28:23.247Z",
     "id": "5efb6827eeb79261e8f9660f"
   }
+  </code>
+
+### FindAll Delivery Route
+- GET /api/deliveryRoute/
+  
+  ### Input query
+  size: Int
+
+  ### Success
+  Status Code: 200
+  Result : Array of DeliverRouteObject with pagingInfo
+  <code>
+  {
+    "pageInformation": {
+        "size": 20,
+        "numberOfItems": 2
+    },
+    "entities": [
+    ]
+  }
+  </code>
+
