@@ -24,12 +24,10 @@ const create = async (req, res, next) => {
             delivery_cost: parseInt(deliveryRoute.substring(2, deliveryRoute.length))
         }
         deliveryRouteItem = datetimeHelper.initDate(deliveryRouteItem);
-        console.log(deliveryRouteItem, "del");
         let query = {
             fromPath: deliveryRouteItem.from_path,
             toPath: deliveryRouteItem.to_path
         }
-        console.log(query);
         let findPromise = deliveryRouteService.find(query);
         findPromise.then((foundRoutes) => {
             if (foundRoutes.length > 0) {

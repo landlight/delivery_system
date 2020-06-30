@@ -1,4 +1,5 @@
 process.env.NODE_ENV = 'test';
+// Create Delivery Route
 
 let chai = require('chai');
 let chaiHttp = require('chai-http');
@@ -7,7 +8,6 @@ let should = chai.should();
 let db = require('../database');
 
 chai.use(chaiHttp);
-
 describe('insert delivery route tests', () => {
     beforeEach((done) => { //Before each test we empty the database
         setTimeout(function() {
@@ -77,11 +77,11 @@ describe('insert delivery route tests', () => {
                 .send({deliveryRoute: "AB3"})
                 .end((err, res) => {
                     res.should.have.status(200);
-                    // res.body.should.have.property('toPath');
-                    // res.body.should.have.property('fromPath');
-                    // res.body.should.have.property('deliveryCost');
-                    // res.body.should.have.property('createdAt');
-                    // res.body.should.have.property('updatedAt');
+                    res.body.should.have.property('toPath');
+                    res.body.should.have.property('fromPath');
+                    res.body.should.have.property('deliveryCost');
+                    res.body.should.have.property('createdAt');
+                    res.body.should.have.property('updatedAt');
                 done();
             });
         });
@@ -89,10 +89,23 @@ describe('insert delivery route tests', () => {
 })
 
 describe('/api/deliveryRoute/', () => {
-    it('6. deliveryRoute correct input => already exists route expect fail', (done) => {
+    it('6. deliveryRoute correct input => same item => already exists route expect fail', (done) => {
         chai.request(server)
             .post('/api/deliveryRoute')
             .send({deliveryRoute: "AB3"})
+            .end((err, res) => {
+                res.should.have.status(400);
+                res.body.message.should.be.eql('DeliveryRoute already exists.');
+            done();
+        });
+    });
+}); 
+
+describe('/api/deliveryRoute/', () => {
+    it('6. deliveryRoute correct input => different cost => already exists route expect fail', (done) => {
+        chai.request(server)
+            .post('/api/deliveryRoute')
+            .send({deliveryRoute: "AB5"})
             .end((err, res) => {
                 res.should.have.status(400);
                 res.body.message.should.be.eql('DeliveryRoute already exists.');
@@ -107,8 +120,12 @@ describe('/api/deliveryRoute/', () => {
             .post('/api/deliveryRoute')
             .send({deliveryRoute: "BC3"})
             .end((err, res) => {
-                res.should.have.status(400);
-                res.body.message.should.be.eql('DeliveryRoute already exists.');
+                res.should.have.status(200);
+                res.body.should.have.property('toPath');
+                res.body.should.have.property('fromPath');
+                res.body.should.have.property('deliveryCost');
+                res.body.should.have.property('createdAt');
+                res.body.should.have.property('updatedAt');
             done();
         });
     });
