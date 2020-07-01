@@ -136,7 +136,30 @@ const editRoute = async (req, res, next) => {
 }
 
 const deleteRoute = async (req, res, next) => {
-    return res.status(400).json(json_error_response.NotImplemented());
+    try {
+        if (!ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({message: "id must be an ObjectID."});
+        }
+        let id = req.params.id;
+        let query = {id: ObjectId(id)};
+        let findPromise = deliveryRouteService.find(query);
+        findPromise.then((deliveryRoutes) => {
+            if (deliveryRoutes.length > 0) {
+                let deletePromise = deliveryRouteService.deleteById(id);
+                deletePromise.then((deleted) =>{
+                    return res.json(deleted);
+                }, (err) => {
+                    json_error_response.DefaultError(err, res);
+                })
+            } else {
+                return res.status(400).json(json_error_response.NotFound('delivery route'));
+            }
+        }, (err) => {
+            json_error_response.DefaultError(err, res);
+        });
+    } catch(err) {
+        json_error_response.DefaultError(err, res);
+    }
 }
 
 module.exports = {

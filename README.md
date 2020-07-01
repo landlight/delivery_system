@@ -92,6 +92,9 @@
 ### UpdateById Delivery Route
 - PUT /api/deliveryRoute/{id} (ObjectID)
   
+  ### Input query
+  params: id
+
   ### Input body
   ```
   {
@@ -110,5 +113,20 @@
     "createdAt": "2020-06-30T16:28:23.247Z",
     "updatedAt": "2020-06-30T16:28:23.247Z",
     "id": "5efb6827eeb79261e8f9660f"
+  }
+  ```
+
+### DeleteById Delivery Route
+- DELETE /api/deliveryRoute/{id} (ObjectID)
+  
+  ### Input query
+  params: id
+
+  ### Success
+  Status Code: 200
+  Result : Success Object
+  ```
+  {
+    "message": "Success"
   }
   ```

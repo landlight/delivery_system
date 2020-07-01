@@ -52,7 +52,6 @@ const find = (deliveryRoute) => {
 const updateCost = (id, cost) => {
     return new Promise((resolve, reject) => {
         try {
-            console.log(id, cost, 'ii');
             let deliveryRouteCollection = db.get().collection('delivery_routes');
             deliveryRouteCollection.updateOne(
                 {
@@ -78,8 +77,29 @@ const updateCost = (id, cost) => {
     })
 }
 
+const deleteById = (id) => {
+    return new Promise((resolve, reject) => {
+        try {
+            let deliveryRouteCollection = db.get().collection('delivery_routes');
+            deliveryRouteCollection.updateOne(
+                {
+                    _id: ObjectId(id)
+                }, (err, deleted) => {
+                    if (err) {
+                        return reject(err);
+                    }
+                    return resolve({message: "success"});
+                }
+            );
+        } catch(err) {
+            return reject(err);
+        }
+    })
+}
+
 module.exports = {
     insertDeliveryRoute,
     find,
-    updateCost
+    updateCost,
+    deleteById
 }
