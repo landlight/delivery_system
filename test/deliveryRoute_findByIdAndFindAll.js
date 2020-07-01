@@ -4,7 +4,6 @@ let chai = require('chai');
 let chaiHttp = require('chai-http');
 let server = require('../server');
 let should = chai.should();
-let db = require('../database');
 
 chai.use(chaiHttp);
 describe('GET findAll delivery route tests', () => {
@@ -32,7 +31,7 @@ describe('GET findAll delivery route tests', () => {
     });
 })
 
-describe('GET /api/deliveryRoute/', () => {
+describe('GET /api/deliveryRoute/{id}', () => {
     it('1. findById => Not ObjectId => expect fail', (done) => {
         chai.request(server)
             .get('/api/deliveryRoute/1234567')
