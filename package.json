@@ -1,0 +1,35 @@
+{
+  "name": "delivery_system",
+  "version": "1.0.0",
+  "description": "delivery system to calculate the shortest route",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "test": "mocha --timeout 10000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/landlight/delivery_system.git"
+  },
+  "author": "Chit Khine",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/landlight/delivery_system/issues"
+  },
+  "homepage": "https://github.com/landlight/delivery_system#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "json_error_response": "^1.0.5",
+    "mongo_recursive_camelcase": "^1.0.0",
+    "mongodb": "^3.5.9",
+    "nodemon": "^2.0.4"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "mocha": "^8.0.1"
+  }
+}
