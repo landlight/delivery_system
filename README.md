@@ -22,6 +22,9 @@
 500 - Internal Server Error
 
 ## API LIST
+
+## POSTMAN LINK - https://www.getpostman.com/collections/a344131f8da3e0ae173d
+
 ### Create Delivery Route
 - POST /api/deliveryRoute/
   

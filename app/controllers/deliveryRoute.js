@@ -4,6 +4,8 @@ const deliveryRouteService = require('../services//deliveryRoute');
 const camel = require('mongo_recursive_camelcase');
 const pagingHelper = require('../helpers/paging');
 
+const ObjectId = require('mongodb').ObjectID;
+
 const create = async (req, res, next) => {
     try {
         if (!req.body.deliveryRoute) {
@@ -71,7 +73,24 @@ const getAllRoutes = async (req, res, next) => {
 }
 
 const getRouteById = async (req, res, next) => {
-    return res.status(400).json(json_error_response.NotImplemented());
+    try {
+        if (!ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({message: "id must be an ObjectID."});
+        }
+        let query = {id: ObjectId(req.params.id)};
+        let findPromise = deliveryRouteService.find(query);
+        findPromise.then((deliveryRoutes) => {
+            if (deliveryRoutes.length > 0) {
+                return res.json(camel.mongoCamel(deliveryRoutes[0]));
+            } else {
+                return res.status(400).json(json_error_response.NotFound('delivery route'));
+            }
+        }, (err) => {
+            json_error_response.DefaultError(err, res);
+        });
+    } catch(err) {
+        json_error_response.DefaultError(err, res);
+    }
 }
 
 const findRoute = async (req, res, next) => {
