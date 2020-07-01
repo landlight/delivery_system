@@ -31,5 +31,41 @@ describe('findAll delivery route tests', () => {
             });
         });
     });
-    
 })
+
+describe('/api/deliveryRoute/', () => {
+    it('1. findById => Not ObjectId => expect fail', (done) => {
+        chai.request(server)
+            .get('/api/deliveryRoute/1234567')
+            .end((err, res) => {
+                res.should.have.status(400);
+                res.body.message.should.be.eql('id must be an ObjectID.');
+            done();
+        });
+    });
+    it('1. findById => Not Existing Item => expect fail', (done) => {
+        chai.request(server)
+            .get('/api/deliveryRoute/5efb99c5f5fd48292c56887c')
+            .end((err, res) => {
+                res.should.have.status(400);
+                res.body.message.should.be.eql('delivery route not found.');
+            done();
+        });
+    });
+    it('1. findById => correct => expect pass', (done) => {
+        chai.request(server)
+            .get('/api/deliveryRoute/5efb99c5f5fd48292c56887b')
+            .end((err, res) => {
+                res.should.have.status(200);
+                res.body.message.should.be.eql('delivery route not found.');
+                res.body.should.have.property('fromPath');
+                res.body.should.have.property('toPath');
+                res.body.should.have.property('deliveryCost');
+                res.body.should.have.property('id');
+                res.body.should.have.property('createdAt');
+                res.body.should.have.property('updatedAt');
+                res.body.id.should.be.eql('5efb99c5f5fd48292c56887b');
+            done();
+        });
+    });
+});
