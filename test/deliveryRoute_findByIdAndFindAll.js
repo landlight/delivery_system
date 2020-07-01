@@ -1,5 +1,4 @@
 process.env.NODE_ENV = 'test';
-// Create Delivery Route
 
 let chai = require('chai');
 let chaiHttp = require('chai-http');
@@ -8,7 +7,7 @@ let should = chai.should();
 let db = require('../database');
 
 chai.use(chaiHttp);
-describe('findAll delivery route tests', () => {
+describe('GET findAll delivery route tests', () => {
     describe('/api/deliveryRoute/', () => {
         it('1. findAll => no params => expect success', (done) => {
             chai.request(server)
@@ -33,7 +32,7 @@ describe('findAll delivery route tests', () => {
     });
 })
 
-describe('/api/deliveryRoute/', () => {
+describe('GET /api/deliveryRoute/', () => {
     it('1. findById => Not ObjectId => expect fail', (done) => {
         chai.request(server)
             .get('/api/deliveryRoute/1234567')
@@ -43,7 +42,7 @@ describe('/api/deliveryRoute/', () => {
             done();
         });
     });
-    it('1. findById => Not Existing Item => expect fail', (done) => {
+    it('2. findById => Not Existing Item => expect fail', (done) => {
         chai.request(server)
             .get('/api/deliveryRoute/5efb99c5f5fd48292c56887c')
             .end((err, res) => {
@@ -52,7 +51,7 @@ describe('/api/deliveryRoute/', () => {
             done();
         });
     });
-    it.skip('1. findById => correct => expect pass', (done) => {
+    it.skip('3. findById => correct => expect pass', (done) => {
         chai.request(server)
             .get('/api/deliveryRoute/5efc5fe153985f5b049aa6b3')
             .end((err, res) => {
