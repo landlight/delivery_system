@@ -98,7 +98,41 @@ const findRoute = async (req, res, next) => {
 }
 
 const editRoute = async (req, res, next) => {
-    return res.status(400).json(json_error_response.NotImplemented());
+    try {
+        if (!ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({message: "id must be an ObjectID."});
+        }
+        if (!req.body.deliveryCost) {
+            return res.status(400).json(json_error_response.IsRequired('deliveryCost'));
+        }
+        if (isNaN(req.body.deliveryCost || parseInt(req.body.deliveryCost) < 0)) {
+            return res.status(400).json(json_error_response.IsNotObject('deliveryCost', 'Integer'));
+        }
+        let id = req.params.id;
+        let query = {id: ObjectId(id)};
+        let findPromise = deliveryRouteService.find(query);
+        findPromise.then((deliveryRoutes) => {
+            if (deliveryRoutes.length > 0) {
+                updatePromise = deliveryRouteService.updateCost(id, req.body.deliveryCost);
+                updatePromise.then((updated) => {
+                    let updatedfindPromise = deliveryRouteService.find(query);
+                    updatedfindPromise.then((updatedRoute) => {
+                        return res.json(camel.mongoCamel(updatedRoute[0]));
+                    }, (err) => {
+                        json_error_response.DefaultError(err, res);
+                    })
+                }, (err) => {
+                    json_error_response.DefaultError(err, res);
+                })
+            } else {
+                return res.status(400).json(json_error_response.NotFound('delivery route'));
+            }
+        }, (err) => {
+            json_error_response.DefaultError(err, res);
+        });
+    } catch(err) {
+        json_error_response.DefaultError(err, res);
+    }
 }
 
 const deleteRoute = async (req, res, next) => {

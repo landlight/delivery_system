@@ -29,7 +29,11 @@
 - POST /api/deliveryRoute/
   
   ### Input BODY (JSON Object)
-  { "deliveryRoute" : "CD3" }
+  ```
+  {
+    "deliveryRoute": "CD3"
+  }
+  ```
 
   ### Success
   Status Code: 200
@@ -65,3 +69,46 @@
   }
   ```
 
+### FindById Delivery Route
+- GET /api/deliveryRoute/{id} (ObjectID)
+  
+  ### Input query
+  params: id
+
+  ### Success
+  Status Code: 200
+  Result : DeliverRouteObject
+  ```
+  {
+    "fromPath": "C",
+    "toPath": "D",
+    "deliveryCost": 3,
+    "createdAt": "2020-06-30T16:28:23.247Z",
+    "updatedAt": "2020-06-30T16:28:23.247Z",
+    "id": "5efb6827eeb79261e8f9660f"
+  }
+  ```
+
+### UpdateById Delivery Route
+- PUT /api/deliveryRoute/{id} (ObjectID)
+  
+  ### Input body
+  ```
+  {
+    "deliveryCost": 5
+  }
+  ```
+
+  ### Success
+  Status Code: 200
+  Result : DeliverRouteObject
+  ```
+  {
+    "fromPath": "C",
+    "toPath": "D",
+    "deliveryCost": 5,
+    "createdAt": "2020-06-30T16:28:23.247Z",
+    "updatedAt": "2020-06-30T16:28:23.247Z",
+    "id": "5efb6827eeb79261e8f9660f"
+  }
+  ```

@@ -48,7 +48,38 @@ const find = (deliveryRoute) => {
         }
     });
 }
+
+const updateCost = (id, cost) => {
+    return new Promise((resolve, reject) => {
+        try {
+            console.log(id, cost, 'ii');
+            let deliveryRouteCollection = db.get().collection('delivery_routes');
+            deliveryRouteCollection.updateOne(
+                {
+                    _id: ObjectId(id)
+                },
+                {
+                    $set: {
+                       delivery_cost: cost
+                    }
+                }, 
+                {
+                    upsert: false
+                }, (err, result) => {
+                    if (err) {
+                        return reject(err);
+                    }
+                    return resolve(result.modifiedCount);
+                }
+            );
+        } catch(err) {
+            return reject(err);
+        }
+    })
+}
+
 module.exports = {
     insertDeliveryRoute,
-    find
+    find,
+    updateCost
 }
