@@ -130,3 +130,18 @@
     "message": "Success"
   }
   ```
+
+### FindCostByRoute
+- GET /api/deliveryRoute/findCostByRoute
+  
+  ### Input query
+  { "deliveryPath": "A-B-C"} 
+
+  ### Success
+  Status Code: 200
+  Result : Success => Delivery Cost
+  ```
+  {
+    "deliveryCost": 8
+  }
+  ```
