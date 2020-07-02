@@ -6,8 +6,8 @@
   "scripts": {
     "start": "nodemon server.js",
     "test": "mocha --timeout 10000",
-    "test-case1": "mocha --timeout 10000 ./test/deliveryRoute_case1_findCostByRoute.js",
-    "test-case23": "mocha --timeout 10000 ./test/deliveryRoute_case2_case3.js"
+    "test1": "mocha --timeout 10000 ./test/deliveryRoute_case1_findCostByRoute.js",
+    "test23": "mocha --timeout 10000 ./test/deliveryRoute_case2_case3.js"
   },
   "repository": {
     "type": "git",
