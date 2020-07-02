@@ -97,9 +97,32 @@ const deleteById = (id) => {
     })
 }
 
+const findRouteByCost = (query, size) => {
+    return new Promise((resolve, reject) => {
+        try {
+            let deliveryRouteCollection = db.get().collection('delivery_routes');
+            deliveryRouteCollection.find(query)
+                .project({delivery_cost: 1})
+                .toArray((err, results) => {
+                if (err) {
+                    return reject(err);
+                }
+                if (results.length != size) {
+                    return resolve({message: "No Such Route"});
+                } else {
+                    let cost = results.map(e => e.delivery_cost).reduce((a, b) => a + b, 0);
+                    return resolve(cost);
+                }
+            });
+        } catch(err) {
+            return reject(err);
+        }
+    });
+}
 module.exports = {
     insertDeliveryRoute,
     find,
     updateCost,
-    deleteById
+    deleteById,
+    findRouteByCost
 }

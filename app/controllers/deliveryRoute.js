@@ -103,10 +103,19 @@ const findCostByRoute = async (req, res, next) => {
         if (deliveryPath.length <= 1 || deliveryPath.length % 2 == 0){
             return res.status(400).json({message: errorMessage});    
         }
+        let query = { $or: [] }
+        let pathSize = 0;
         for (let i = 0; i < deliveryPath.length; i++) {
             if (i % 2 == 0) {
                 if (!isNaN(deliveryPath[i])) {
                     return res.status(400).json({message: errorMessage});
+                }
+                if (i < deliveryPath.length - 2) {
+                    pathSize += 1;
+                    query.$or.push({
+                        from_path: deliveryPath[i],
+                        to_path: deliveryPath[i+2]
+                    })
                 }
             } else {
                 if (deliveryPath[i] != '-') {
@@ -114,7 +123,16 @@ const findCostByRoute = async (req, res, next) => {
                 }
             }
         }
-        return res.json({message: "Success"});
+        let findRouteByCostPromise = deliveryRouteService.findRouteByCost(query, pathSize);
+        findRouteByCostPromise.then((cost) => {
+            if (cost.message) {
+                return res.status(400).json({message: cost.message});
+            } else {
+                return res.status(200).json({deliveryCost: cost});
+            }
+        }, (err) => {
+            json_error_response.DefaultError(err, res);
+        })
     } catch(err) {
         json_error_response.DefaultError(err, res);
     }
