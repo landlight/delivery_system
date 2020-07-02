@@ -3,11 +3,11 @@ var deliveryRouteController = require('../controllers/deliveryRoute');
 var express = require('express');
 var router = express.Router();
 
+router.route('/findCostByRoute')
+      .get(deliveryRouteController.findCostByRoute);
+
 router.route('/:id')
       .get(deliveryRouteController.getRouteById);
-
-router.route('/find')
-      .get(deliveryRouteController.findRoute);
 
 router.route('/:id')
       .put(deliveryRouteController.editRoute);

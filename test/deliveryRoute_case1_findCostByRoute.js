@@ -9,10 +9,15 @@ chai.use(chaiHttp);
 
 // Input tests
 describe('GET /api/deliveryRoute/findCostByRoute', () => {
+    beforeEach((done) => { 
+        setTimeout(function() {
+            done()
+        }, 200); 
+    });
     it('1. NoDeliveryPath => expect fail', (done) => {
         chai.request(server)
             .get('/api/deliveryRoute/findCostByRoute')
-            .query({})
+            .query({deliveryPath: ''})
             .end((err, res) => {
                 res.should.have.status(400);
                 res.body.should.have.property('message');

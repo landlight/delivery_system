@@ -93,8 +93,31 @@ const getRouteById = async (req, res, next) => {
     }
 }
 
-const findRoute = async (req, res, next) => {
-    return res.status(400).json(json_error_response.NotImplemented());
+const findCostByRoute = async (req, res, next) => {
+    try {
+        if (!req.query.deliveryPath) {
+            return res.status(400).json(json_error_response.IsRequired('deliveryPath'));
+        }
+        let errorMessage = "deliveryPath must be in formats such as A-B, A-B-C, A-B-C-D and the values must be characters";
+        const deliveryPath = req.query.deliveryPath;
+        if (deliveryPath.length <= 1 || deliveryPath.length % 2 == 0){
+            return res.status(400).json({message: errorMessage});    
+        }
+        for (let i = 0; i < deliveryPath.length; i++) {
+            if (i % 2 == 0) {
+                if (!isNaN(deliveryPath[i])) {
+                    return res.status(400).json({message: errorMessage});
+                }
+            } else {
+                if (deliveryPath[i] != '-') {
+                    return res.status(400).json({message: errorMessage});
+                }
+            }
+        }
+        return res.json({message: "Success"});
+    } catch(err) {
+        json_error_response.DefaultError(err, res);
+    }
 }
 
 const editRoute = async (req, res, next) => {
@@ -166,7 +189,7 @@ module.exports = {
     create,
     getAllRoutes,
     getRouteById,
-    findRoute,
+    findCostByRoute,
     editRoute,
     deleteRoute
 }
