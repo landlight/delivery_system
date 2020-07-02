@@ -99,4 +99,82 @@ describe('Create Data for testing case 2 and case 3', () => {
             });
         });
     });
+     // PossibleRoute Input Error Checking 
+     it('2.1 No Query Param => expect fail', (done) => {
+        chai.request(server)
+            .get('/api/deliveryRoute/possibleRoute')
+            .end((err, res) => {
+                res.should.have.status(400);
+                res.body.should.have.property('message');
+                res.body.message.should.be.eql('deliveryPath is required.');
+            done();
+        });
+    })
+    const deliveryPathErrorMessage = "deliveryPath must be exactly 3 words in format (A-B). (A: starting destination, B: ending destination";
+    it('2.2 Delivery Path Format Check 1 => expect fail', (done) => {
+        chai.request(server)
+            .get('/api/deliveryRoute/possibleRoute')
+            .query({deliveryPath: "A-"})
+            .end((err, res) => {
+                res.should.have.status(400);
+                res.body.should.have.property('message');
+                res.body.message.should.be.eql(deliveryPathErrorMessage);
+            done();
+        });
+    })
+    it('2.3 Delivery Path Format Check 2 => expect fail', (done) => {
+        chai.request(server)
+            .get('/api/deliveryRoute/possibleRoute')
+            .query({deliveryPath: "A-3"})
+            .end((err, res) => {
+                res.should.have.status(400);
+                res.body.should.have.property('message');
+                res.body.message.should.be.eql(deliveryPathErrorMessage);
+            done();
+        });
+    })
+    it('2.4 Delivery Path Format Check 3 => expect fail', (done) => {
+        chai.request(server)
+            .get('/api/deliveryRoute/possibleRoute')
+            .query({deliveryPath: "AB3"})
+            .end((err, res) => {
+                res.should.have.status(400);
+                res.body.should.have.property('message');
+                res.body.message.should.be.eql(deliveryPathErrorMessage);
+            done();
+        });
+    })
+    it('2.5 Delivery Path Format Check 4 => expect fail', (done) => {
+        chai.request(server)
+            .get('/api/deliveryRoute/possibleRoute')
+            .query({deliveryPath: "3-A"})
+            .end((err, res) => {
+                res.should.have.status(400);
+                res.body.should.have.property('message');
+                res.body.message.should.be.eql(deliveryPathErrorMessage);
+            done();
+        });
+    })
+    it('2.6 maximumStop input error => expect fail', (done) => {
+        chai.request(server)
+            .get('/api/deliveryRoute/possibleRoute')
+            .query({deliveryPath: "A-B", maximumStop: "A"})
+            .end((err, res) => {
+                res.should.have.status(400);
+                res.body.should.have.property('message');
+                res.body.message.should.be.eql("maximumStop must be type: Integer");
+            done();
+        });
+    })
+    it('2.6 deliveryCost input error => expect fail', (done) => {
+        chai.request(server)
+            .get('/api/deliveryRoute/possibleRoute')
+            .query({deliveryPath: "A-B", deliveryCost: "A"})
+            .end((err, res) => {
+                res.should.have.status(400);
+                res.body.should.have.property('message');
+                res.body.message.should.be.eql("deliveryCost must be type: Integer");
+            done();
+        });
+    })
 });

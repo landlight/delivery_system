@@ -26,7 +26,7 @@ describe('GET /api/deliveryRoute/findCostByRoute', () => {
             done();
         });
     });
-    let errorMessage = "deliveryPath must be in formats such as A-B, A-B-C, A-B-C-D and the values must be characters";
+    const errorMessage = "deliveryPath must be in formats such as A-B, A-B-C, A-B-C-D and the values must be characters";
     it('2.1 DeliveryPath wrong formats => expect fail', (done) => {
         chai.request(server)
             .get('/api/deliveryRoute/findCostByRoute')
