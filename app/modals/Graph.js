@@ -63,7 +63,7 @@ class Graph {
         if (currVertex == destVertex) {
             if (vertex.currCost != 0) { // if currCost is 0 => ignore
                 // Print the following line if required to see the stops
-                // console.log(path, cost);
+                // console.log(path, vertex.currCost);
                 fullPath.push({path: path.length, cost: vertex.currCost});
             }
         } else {

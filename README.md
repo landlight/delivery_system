@@ -1,8 +1,7 @@
 # eko delivery_system
 
 ## Prerequisites
-
-- install mongodb 
+- install mongodb  (https://docs.mongodb.com/manual/administration/install-community/)
 - install node 
 - npm install
 
