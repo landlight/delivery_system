@@ -141,7 +141,25 @@ describe('3. No Path Route and Correct Test', () => {
                 done();
             });
         });
-        it('3.5. No Path Route', (done) => {
+        it('3.5. Create Data Paths for testing Case 1', (done) => {
+            chai.request(server)
+                .post('/api/deliveryRoute')
+                .send({deliveryRoute: "EB3"})
+                .end((err, res) => {
+                    res.should.have.status(200);
+                done();
+            });
+        });
+        it('3.6. Create Data Paths for testing Case 1', (done) => {
+            chai.request(server)
+                .post('/api/deliveryRoute')
+                .send({deliveryRoute: "BE3"})
+                .end((err, res) => {
+                    res.should.have.status(200);
+                done();
+            });
+        });
+        it('3.7. No Path Route', (done) => {
             chai.request(server)
                 .get('/api/deliveryRoute/findCostByRoute')
                 .query({deliveryPath: 'A-B-D-E'})
@@ -152,10 +170,10 @@ describe('3. No Path Route and Correct Test', () => {
                 done();
             });
         });
-        it('3.6. No Path Route', (done) => {
+        it('3.8. No Path Route', (done) => {
             chai.request(server)
                 .get('/api/deliveryRoute/findCostByRoute')
-                .query({deliveryPath: 'A-B-E-F'})
+                .query({deliveryPath: 'A-B-G-F'})
                 .end((err, res) => {
                     res.should.have.status(400);
                     res.body.should.have.property('message');
@@ -163,7 +181,7 @@ describe('3. No Path Route and Correct Test', () => {
             done();
             });
         });
-        it('3.7. Correct Path => expect 7', (done) => {
+        it('3.9. Correct Path => expect 7', (done) => {
             chai.request(server)
                 .get('/api/deliveryRoute/findCostByRoute')
                 .query({deliveryPath: 'A-B-C'})
@@ -174,7 +192,7 @@ describe('3. No Path Route and Correct Test', () => {
             done();
             });
         });
-        it('3.8. Correct Path => expect 16', (done) => {
+        it('3.10. Correct Path => expect 16', (done) => {
             chai.request(server)
                 .get('/api/deliveryRoute/findCostByRoute')
                 .query({deliveryPath: 'B-C-E-F'})
@@ -182,6 +200,18 @@ describe('3. No Path Route and Correct Test', () => {
                     res.should.have.status(200);
                     res.body.should.have.property('deliveryCost');
                     res.body.deliveryCost.should.be.eql(16); // 4 + 10 + 2
+            done();
+            });
+        });
+        // the current solution does not solve this case
+        it('3.11. Correct Path => cyclic path => expect 16', (done) => {
+            chai.request(server)
+                .get('/api/deliveryRoute/findCostByRoute')
+                .query({deliveryPath: 'E-B-E-B-E'})
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.should.have.property('deliveryCost');
+                    res.body.deliveryCost.should.be.eql(12);
             done();
             });
         });
