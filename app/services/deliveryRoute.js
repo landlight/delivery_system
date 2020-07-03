@@ -121,7 +121,7 @@ const findRouteByCost = (query, size) => {
     });
 }
 
-const calculateNoOfPossibleRoutes = (deliveryPath, maxStop, deliveryCost) => {
+const calculateNoOfPossibleRoutes = (deliveryPath, maxStop, deliveryCost, useDoublePath) => {
     return new Promise((resolve, reject) => {
         try {
             let start = deliveryPath[0];
@@ -137,7 +137,7 @@ const calculateNoOfPossibleRoutes = (deliveryPath, maxStop, deliveryCost) => {
                     if (err) {
                         return reject(err);
                     }
-                    let possiblePathsArray = getPossiblePathsArray(results, start, end);
+                    let possiblePathsArray = getPossiblePathsArray(results, start, end, useDoublePath);
                     const possiblePaths = possiblePathsArray.filter(e => e.path-1 <= maxStop && e.cost <= deliveryCost).length;
                     return resolve(possiblePaths);
                 });
@@ -177,7 +177,7 @@ const calculateCheapestCost = (deliveryPath) => {
     })
 }
 
-function getPossiblePathsArray(results, start, end) {
+function getPossiblePathsArray(results, start, end, bonus) {
     let startingPaths = results.map(e => e.from_path);
     let destinationPaths = results.map(e => e.to_path);
 
@@ -192,24 +192,28 @@ function getPossiblePathsArray(results, start, end) {
         g.addEdge(startingPaths[i], destinationPaths[i], results[i].delivery_cost);
     }
     // Case 2.2 
-    if (start == end) {
-        let vertex = g.vertices[start];
-        let newStartPointList = vertex.getConnections();
-        let possiblePathsArray = [];
-        for (let i in newStartPointList) {
-            let cost = vertex.getCost(newStartPointList[i]);
-            let paths = g.getAllPaths(newStartPointList[i], end);
-            for (let j in paths) {
-                paths[j].path = paths[j].path + 1;
-                paths[j].cost = paths[j].cost + cost;
-                possiblePathsArray.push(paths[j]);
+    if (!bonus) {
+        if (start == end) {
+            let vertex = g.vertices[start];
+            let newStartPointList = vertex.getConnections();
+            let possiblePathsArray = [];
+            for (let i in newStartPointList) {
+                let cost = vertex.getCost(newStartPointList[i]);
+                let paths = g.getAllPaths(newStartPointList[i], end);
+                for (let j in paths) {
+                    paths[j].path = paths[j].path + 1;
+                    paths[j].cost = paths[j].cost + cost;
+                    possiblePathsArray.push(paths[j]);
+                }
             }
+            return possiblePathsArray;
         }
-        return possiblePathsArray;
-    }
-    else {
-        // Case 2.1 
-        return g.getAllPaths(start, end);
+        else {
+            // Case 2.1 
+            return g.getAllPaths(start, end);
+        }
+    } else {
+        return g.getAllPathsDoubleVisit(start, end, [], [], 0);
     }
 }
 
