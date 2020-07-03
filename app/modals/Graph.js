@@ -45,7 +45,7 @@ class Graph {
             path.push(vertex.getData());
         }
         if (currVertex == destVertex) {
-            if (vertex.currCost != 0) {
+            if (vertex.currCost != 0) { // if currCost is 0 => ignore
                 console.log(path, vertex.currCost);
                 fullPath.push({path: path.length, cost: vertex.currCost});
             }

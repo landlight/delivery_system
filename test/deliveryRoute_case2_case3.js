@@ -157,6 +157,28 @@ describe('Create Data for testing case 2 and case 3', () => {
                 done();
             });
         })
+        it('2.7 Test Case 2.1 => expect pass', (done) => {
+            chai.request(server)
+                .get('/api/deliveryRoute/possibleRoute')
+                .query({deliveryPath: "E-D", maximumStop: 4})
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.should.have.property('possiblePaths');
+                    res.body.possiblePaths.should.be.eql(4);
+                done();
+            });
+        })
+        it('2.8 Test Case 2.1 => expect pass', (done) => {
+            chai.request(server)
+                .get('/api/deliveryRoute/possibleRoute')
+                .query({deliveryPath: "E-E"})
+                .end((err, res) => {
+                    res.should.have.status(200);
+                    res.body.should.have.property('possiblePaths');
+                    res.body.possiblePaths.should.be.eql(5);
+                done();
+            });
+        })
     });
 });
     

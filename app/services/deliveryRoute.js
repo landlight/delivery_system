@@ -187,25 +187,3 @@ module.exports = {
     findRouteByCost,
     calculateNoOfPossibleRoutes
 }
-
-//  TEST 
- // g.add("A", "A")
-// g.add("B", "B")
-// g.add("C", "C")
-// g.add("D", "D")
-// g.add("E", "E")
-// g.add("F", "F")
-
-// g.addEdge("A", "B", 1)
-// g.addEdge("B", "E", 1)
-// g.addEdge("E", "F", 0.5)
-
-// g.addEdge("B", "F", 2)
-
-// g.addEdge("A", "C", 1)
-// g.addEdge("C", "F", 3)
-
-// g.addEdge("A", "D", 1)
-// g.addEdge("D", "F", 4)
-
-// g.getAllPaths("A", "F");
