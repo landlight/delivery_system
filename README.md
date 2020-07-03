@@ -26,7 +26,7 @@
 
 ## POSTMAN LINK - https://www.getpostman.com/collections/a344131f8da3e0ae173d
 
-### Create Delivery Route
+### 1. Create Delivery Route
 - POST /api/deliveryRoute/
   
   ### Input BODY (JSON Object)
@@ -50,7 +50,7 @@
   }
   ```
 
-### FindAll Delivery Route
+### 2. FindAll Delivery Route
 - GET /api/deliveryRoute/
   
   ### Input query
@@ -70,7 +70,7 @@
   }
   ```
 
-### FindById Delivery Route
+### 3. FindById Delivery Route
 - GET /api/deliveryRoute/{id} (ObjectID)
   
   ### Input query
@@ -90,7 +90,7 @@
   }
   ```
 
-### UpdateById Delivery Route
+### 4. UpdateById Delivery Route
 - PUT /api/deliveryRoute/{id} (ObjectID)
   
   ### Input query
@@ -117,7 +117,7 @@
   }
   ```
 
-### DeleteById Delivery Route
+### 5. DeleteById Delivery Route
 - DELETE /api/deliveryRoute/{id} (ObjectID)
   
   ### Input query
@@ -132,7 +132,7 @@
   }
   ```
 
-### FindCostByRoute (CASE 1)
+### 6. FindCostByRoute (CASE 1)
 - GET /api/deliveryRoute/findCostByRoute
   
   ### Input query
@@ -147,7 +147,7 @@
   }
   ```
  
-### FindPossible Paths (CASE 2)
+### 7. FindPossible Paths (CASE 2)
 - GET /api/deliveryRoute/possibleRoute
   
   ### Input query
@@ -168,7 +168,7 @@
   }
   ```
 
-### Find CheapestCost (CASE 3)
+### 8. Find CheapestCost (CASE 3)
 - GET /api/deliveryRoute/cheapestCost
   
   ### Input query
@@ -186,3 +186,12 @@
     "cheapestCost": 9
   }
   ```
+
+
+# HOW TO USE
+
+After setting up the program, you should run "npm run test23" to set up the example data.
+You can also use CRUD APIs to set up the deliveryRoutes. After setting up the data, you can 
+either check the test cases or you can import the postman from 
+https://www.getpostman.com/collections/a344131f8da3e0ae173d
+and test the cases manually in test 6, 7 and 8.
