@@ -36,7 +36,7 @@ class Graph {
     // Bonus
     getAllPathsDoubleVisit(start, end) {
         this.dfsArray = [];
-        this.dfs(start, end, [], [], this.dfsArray, true);
+        this.dfs(start, end, [], [], this.dfsArray, false);
         return this.dfsArray;
     }
 
@@ -54,7 +54,7 @@ class Graph {
                 }
             } else {
                 if (this.isDoubleVisit(path, vertex.getData())) {
-                    path.push(vertex.getDat())
+                    path.push(vertex.getData())
                 }
             }
         } else {
