@@ -164,12 +164,12 @@ const calculateNoOfPossibleRoutes = (deliveryPath, maxStop, deliveryCost) => {
                                 possiblePathsArray.push(paths[j]);
                             }
                         }
-                        const possiblePaths = possiblePathsArray.filter(e => e.path <= (maxStop + 1) && e.cost <= deliveryCost).length;
+                        const possiblePaths = possiblePathsArray.filter(e => e.path-1 <= maxStop && e.cost <= deliveryCost).length;
                         return resolve(possiblePaths);
                     } else {
                         // Case 2.1 
                         let possiblePathsArray = g.getAllPaths(start, end);
-                        const possiblePaths = possiblePathsArray.filter(e => e.path <= (maxStop + 1) && e.cost <= deliveryCost).length;
+                        const possiblePaths = possiblePathsArray.filter(e => e.path-1 <= maxStop && e.cost <= deliveryCost).length;
                         return resolve(possiblePaths);
                     }
                 });

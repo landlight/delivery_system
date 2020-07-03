@@ -131,7 +131,7 @@
   }
   ```
 
-### FindCostByRoute
+### FindCostByRoute (CASE 1)
 - GET /api/deliveryRoute/findCostByRoute
   
   ### Input query
@@ -143,5 +143,26 @@
   ```
   {
     "deliveryCost": 8
+  }
+  ```
+ 
+### FindPossible Paths (CASE 2)
+- GET /api/deliveryRoute/possibleRoute
+  
+  ### Input query
+  ```
+  { 
+    "deliveryPath": "E-D", (REQUIRED)
+    "maximumStop": 4, (OPTIONAL => default MAX INT)
+    "deliveryCost": 10 (OPTIONAL => default MAX INT)
+  } 
+  ```
+
+  ### Success
+  Status Code: 200
+  Result : Success => Possible Paths
+  ```
+  {
+    "possiblePaths": 4
   }
   ```

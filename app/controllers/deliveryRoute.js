@@ -222,6 +222,7 @@ const possibleRoute = (req, res, next) => {
         if (!req.query.deliveryPath) {
             return res.status(400).json(json_error_response.IsRequired('deliveryPath'));
         } 
+        
         const deliveryPath = req.query.deliveryPath;
         if (deliveryPath.length != 3 || deliveryPath[1] !== '-' || !isNaN(deliveryPath[0]) || !isNaN(deliveryPath[2])) {
             return res.status(400).json({message: "deliveryPath must be exactly 3 words in format (A-B). (A: starting destination, B: ending destination"});
