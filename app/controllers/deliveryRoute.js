@@ -238,6 +238,30 @@ const possibleRoute = (req, res, next) => {
     }
 }
 
+const cheapestCost = (req,res, next) => {
+    try {
+        if (!req.query.deliveryPath) {
+            return res.status(400).json(json_error_response.IsRequired('deliveryPath'));
+        } 
+        const deliveryPath = req.query.deliveryPath;
+        if (deliveryPath.length != 3 || deliveryPath[1] !== '-' || !isNaN(deliveryPath[0]) || !isNaN(deliveryPath[2])) {
+            return res.status(400).json({message: "deliveryPath must be exactly 3 words in format (A-B). (A: starting destination, B: ending destination"});
+        }
+        cheapestCostPromise = deliveryRouteService.calculateCheapestCost(deliveryPath);
+        cheapestCostPromise.then((result) => {
+            if (result >= 0) {
+                return res.json({cheapestCost: result});
+            } else {
+                return res.status(400).json({message: "No Possible Path"});
+            }
+        }, (err) =>  {
+            json_error_response.DefaultError(err, res);
+        })
+    } catch(err) {
+        json_error_response.DefaultError(err, res);
+    }
+}
+
 module.exports = {
     create,
     getAllRoutes,
@@ -245,5 +269,6 @@ module.exports = {
     findCostByRoute,
     possibleRoute,
     editRoute,
-    deleteRoute
+    deleteRoute,
+    cheapestCost
 }

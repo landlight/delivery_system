@@ -9,6 +9,9 @@ router.route('/findCostByRoute')
 router.route('/possibleRoute')
       .get(deliveryRouteController.possibleRoute);
 
+router.route('/cheapestCost')
+      .get(deliveryRouteController.cheapestCost);
+      
 router.route('/:id')
       .get(deliveryRouteController.getRouteById);
 
