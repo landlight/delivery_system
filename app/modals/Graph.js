@@ -1,3 +1,4 @@
+// Rewrite and extended from this webpage: https://programmingsoup.com/article/find-all-paths-between-two-nodes
 
 const Vertex = require('../modals/Vertex');
 
@@ -41,6 +42,9 @@ class Graph {
 
     dfs(currVertex, destVertex, visited, path, fullPath, bonus = false) {
         let vertex = this.vertices[currVertex];
+        if (!vertex) {
+            return fullPath;
+        }
         visited.push(currVertex);
         
         if (path.includes(vertex.getData())) {
@@ -58,7 +62,8 @@ class Graph {
         }
         if (currVertex == destVertex) {
             if (vertex.currCost != 0) { // if currCost is 0 => ignore
-                console.log(path, vertex.currCost);
+                // Print the following line if required to see the stops
+                // console.log(path, cost);
                 fullPath.push({path: path.length, cost: vertex.currCost});
             }
         } else {
