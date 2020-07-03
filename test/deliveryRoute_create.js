@@ -8,7 +8,7 @@ let should = chai.should();
 let db = require('../database');
 
 chai.use(chaiHttp);
-let createErrorMessage = "deliveryRoute must be at least 3 characters " +
+const createErrorMessage = "deliveryRoute must be at least 3 characters " +
                              "and of format AB3 (first and second (locations) " +
                              "are characters follow by number (distance cost)).";
 describe('POST /api/deliveryRoute/', () => {

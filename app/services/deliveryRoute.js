@@ -1,5 +1,6 @@
 const db = require('../../database');
 const ObjectId = require('mongodb').ObjectID;
+const Graph = require('../modals/Graph');
 
 const insertDeliveryRoute = async (deliveryRoute) => {
     return new Promise((resolve, reject) => {
@@ -97,9 +98,127 @@ const deleteById = (id) => {
     })
 }
 
+const findRouteByCost = (query, size) => {
+    return new Promise((resolve, reject) => {
+        try {
+            let deliveryRouteCollection = db.get().collection('delivery_routes');
+            deliveryRouteCollection.find(query)
+                .project({delivery_cost: 1})
+                .toArray((err, results) => {
+                if (err) {
+                    return reject(err);
+                }
+                if (results.length != size) {
+                    return resolve({message: "No Such Route"});
+                } else {
+                    let cost = results.map(e => e.delivery_cost).reduce((a, b) => a + b, 0);
+                    return resolve(cost);
+                }
+            });
+        } catch(err) {
+            return reject(err);
+        }
+    });
+}
+
+const calculateNoOfPossibleRoutes = (deliveryPath, maxStop, deliveryCost) => {
+    return new Promise((resolve, reject) => {
+        try {
+            let start = deliveryPath[0];
+            let end = deliveryPath[2];
+            let deliveryRouteCollection = db.get().collection('delivery_routes');
+            deliveryRouteCollection.find({})
+                .project({
+                    from_path: 1,
+                    to_path: 1,
+                    delivery_cost: 1
+                })
+                .toArray((err, results) => {
+                    if (err) {
+                        return reject(err);
+                    }
+                    let possiblePathsArray = getPossiblePathsArray(results, start, end);
+                    const possiblePaths = possiblePathsArray.filter(e => e.path-1 <= maxStop && e.cost <= deliveryCost).length;
+                    return resolve(possiblePaths);
+                });
+        } catch(err) {
+            return reject(err);
+        }
+    })
+}
+
+const calculateCheapestCost = (deliveryPath) => {
+    return new Promise((resolve, reject) => {
+        try {
+            let start = deliveryPath[0];
+            let end = deliveryPath[2];
+            let deliveryRouteCollection = db.get().collection('delivery_routes');
+            deliveryRouteCollection.find({})
+                .project({
+                    from_path: 1,
+                    to_path: 1,
+                    delivery_cost: 1
+                })
+                .toArray((err, results) => {
+                    if (err) {
+                        return reject(err);
+                    }
+                    let possiblePathsArray = getPossiblePathsArray(results, start, end);
+                    if (possiblePathsArray.length <= 0) {
+                        return resolve(-1);
+                    } else {
+                        let cheapestCost = Math.min(...possiblePathsArray.map(e => e.cost));
+                        return resolve(cheapestCost)
+                    }
+                });
+        } catch(err) {
+            return reject(err);
+        }
+    })
+}
+
+function getPossiblePathsArray(results, start, end) {
+    let startingPaths = results.map(e => e.from_path);
+    let destinationPaths = results.map(e => e.to_path);
+
+    let combine = startingPaths;
+    combine.concat(destinationPaths);
+    let vertices = [...new Set(combine)];
+    let g = new Graph();
+    for (let i = 0; i < vertices.length; i++) {
+        g.add(vertices[i], vertices[i]);
+    }
+    for (let i = 0; i < startingPaths.length; i++) {
+        g.addEdge(startingPaths[i], destinationPaths[i], results[i].delivery_cost);
+    }
+    // Case 2.2 
+    if (start == end) {
+        let vertex = g.vertices[start];
+        let newStartPointList = vertex.getConnections();
+        let possiblePathsArray = [];
+        for (let i in newStartPointList) {
+            let cost = vertex.getCost(newStartPointList[i]);
+            let paths = g.getAllPaths(newStartPointList[i], end);
+            for (let j in paths) {
+                paths[j].path = paths[j].path + 1;
+                paths[j].cost = paths[j].cost + cost;
+                possiblePathsArray.push(paths[j]);
+            }
+        }
+        return possiblePathsArray;
+    }
+    else {
+        // Case 2.1 
+        return g.getAllPaths(start, end);
+    }
+}
+
 module.exports = {
     insertDeliveryRoute,
     find,
     updateCost,
-    deleteById
+    deleteById,
+    findRouteByCost,
+    calculateNoOfPossibleRoutes,
+    calculateCheapestCost
 }

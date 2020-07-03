@@ -1,8 +1,7 @@
 # eko delivery_system
 
 ## Prerequisites
-
-- install mongodb 
+- install mongodb  (https://docs.mongodb.com/manual/administration/install-community/)
 - install node 
 - npm install
 
@@ -11,6 +10,8 @@
 
 ## TEST
 - npm run test
+- npm run test1 (test cases for case 1)
+- npm run test23 (test cases for case 3)
 
 ### Status Codes
 200 - Success
@@ -25,7 +26,7 @@
 
 ## POSTMAN LINK - https://www.getpostman.com/collections/a344131f8da3e0ae173d
 
-### Create Delivery Route
+### 1. Create Delivery Route
 - POST /api/deliveryRoute/
   
   ### Input BODY (JSON Object)
@@ -49,7 +50,7 @@
   }
   ```
 
-### FindAll Delivery Route
+### 2. FindAll Delivery Route
 - GET /api/deliveryRoute/
   
   ### Input query
@@ -69,7 +70,7 @@
   }
   ```
 
-### FindById Delivery Route
+### 3. FindById Delivery Route
 - GET /api/deliveryRoute/{id} (ObjectID)
   
   ### Input query
@@ -89,7 +90,7 @@
   }
   ```
 
-### UpdateById Delivery Route
+### 4. UpdateById Delivery Route
 - PUT /api/deliveryRoute/{id} (ObjectID)
   
   ### Input query
@@ -116,7 +117,7 @@
   }
   ```
 
-### DeleteById Delivery Route
+### 5. DeleteById Delivery Route
 - DELETE /api/deliveryRoute/{id} (ObjectID)
   
   ### Input query
@@ -130,3 +131,67 @@
     "message": "Success"
   }
   ```
+
+### 6. FindCostByRoute (CASE 1)
+- GET /api/deliveryRoute/findCostByRoute
+  
+  ### Input query
+  { "deliveryPath": "A-B-C"} 
+
+  ### Success
+  Status Code: 200
+  Result : Success => Delivery Cost
+  ```
+  {
+    "deliveryCost": 8
+  }
+  ```
+ 
+### 7. FindPossible Paths (CASE 2)
+- GET /api/deliveryRoute/possibleRoute
+  
+  ### Input query
+  ```
+  { 
+    "deliveryPath": "E-D", (REQUIRED)
+    "maximumStop": 4, (OPTIONAL => default MAX INT)
+    "deliveryCost": 10 (OPTIONAL => default MAX INT)
+  } 
+  ```
+
+  ### Success
+  Status Code: 200
+  Result : Success => Possible Paths
+  ```
+  {
+    "possiblePaths": 4
+  }
+  ```
+
+### 8. Find CheapestCost (CASE 3)
+- GET /api/deliveryRoute/cheapestCost
+  
+  ### Input query
+  ```
+  { 
+    "deliveryPath": "E-D", (REQUIRED)
+  } 
+  ```
+
+  ### Success
+  Status Code: 200
+  Result : Success => Possible Paths
+  ```
+  {
+    "cheapestCost": 9
+  }
+  ```
+
+
+# HOW TO USE
+
+After setting up the program, you should run "npm run test23" to set up the example data.
+You can also use CRUD APIs to set up the deliveryRoutes. After setting up the data, you can 
+either check the test cases or you can import the postman from 
+https://www.getpostman.com/collections/a344131f8da3e0ae173d
+and test the cases manually in test 6, 7 and 8.

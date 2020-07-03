@@ -11,9 +11,9 @@ const create = async (req, res, next) => {
         if (!req.body.deliveryRoute) {
             return res.status(400).json(json_error_response.IsRequired('deliveryRoute'));
         }
-        let errorMessage = "deliveryRoute must be at least 3 characters " +
-                        "and of format AB3 (first and second (locations) " +
-                        "are characters follow by number (distance cost)).";
+        const errorMessage = "deliveryRoute must be at least 3 characters " +
+                             "and of format AB3 (first and second (locations) " +
+                             "are characters follow by number (distance cost)).";
         let deliveryRoute = req.body.deliveryRoute;
         if (deliveryRoute.length < 3 || 
             !isNaN(deliveryRoute.charAt(0)) || 
@@ -93,8 +93,49 @@ const getRouteById = async (req, res, next) => {
     }
 }
 
-const findRoute = async (req, res, next) => {
-    return res.status(400).json(json_error_response.NotImplemented());
+const findCostByRoute = async (req, res, next) => {
+    try {
+        if (!req.query.deliveryPath) {
+            return res.status(400).json(json_error_response.IsRequired('deliveryPath'));
+        }
+        const errorMessage = "deliveryPath must be in formats such as A-B, A-B-C, A-B-C-D and the values must be characters";
+        const deliveryPath = req.query.deliveryPath;
+        if (deliveryPath.length <= 1 || deliveryPath.length % 2 == 0){
+            return res.status(400).json({message: errorMessage});    
+        }
+        let query = { $or: [] }
+        let pathSize = 0;
+        for (let i = 0; i < deliveryPath.length; i++) {
+            if (i % 2 == 0) {
+                if (!isNaN(deliveryPath[i])) {
+                    return res.status(400).json({message: errorMessage});
+                }
+                if (i < deliveryPath.length - 2) {
+                    pathSize += 1;
+                    query.$or.push({
+                        from_path: deliveryPath[i],
+                        to_path: deliveryPath[i+2]
+                    })
+                }
+            } else {
+                if (deliveryPath[i] != '-') {
+                    return res.status(400).json({message: errorMessage});
+                }
+            }
+        }
+        let findRouteByCostPromise = deliveryRouteService.findRouteByCost(query, pathSize);
+        findRouteByCostPromise.then((cost) => {
+            if (cost.message) {
+                return res.status(400).json({message: cost.message});
+            } else {
+                return res.status(200).json({deliveryCost: cost});
+            }
+        }, (err) => {
+            json_error_response.DefaultError(err, res);
+        })
+    } catch(err) {
+        json_error_response.DefaultError(err, res);
+    }
 }
 
 const editRoute = async (req, res, next) => {
@@ -162,11 +203,72 @@ const deleteRoute = async (req, res, next) => {
     }
 }
 
+const possibleRoute = (req, res, next) => {
+    try {
+        let max = Number.MAX_SAFE_INTEGER;
+        let deliverCost = Number.MAX_SAFE_INTEGER;
+        if (req.query.maximumStop) {
+            if (isNaN(req.query.maximumStop)) {
+                return res.status(400).json(json_error_response.IsNotObject('maximumStop', 'Integer'));
+            }
+            max = parseInt(req.query.maximumStop);
+        }
+        if (req.query.deliveryCost) {
+            if (isNaN(req.query.deliveryCost)) {
+                return res.status(400).json(json_error_response.IsNotObject('deliveryCost', 'Integer'));
+            }
+            deliverCost = parseInt(req.query.deliveryCost);
+        }
+        if (!req.query.deliveryPath) {
+            return res.status(400).json(json_error_response.IsRequired('deliveryPath'));
+        } 
+        
+        const deliveryPath = req.query.deliveryPath;
+        if (deliveryPath.length != 3 || deliveryPath[1] !== '-' || !isNaN(deliveryPath[0]) || !isNaN(deliveryPath[2])) {
+            return res.status(400).json({message: "deliveryPath must be exactly 3 words in format (A-B). (A: starting destination, B: ending destination"});
+        }
+        possibleRoutePromise = deliveryRouteService.calculateNoOfPossibleRoutes(deliveryPath, max, deliverCost);
+        possibleRoutePromise.then((result) => {
+            return res.json({possiblePaths: result});
+        }, (err) =>  {
+            json_error_response.DefaultError(err, res);
+        })
+    } catch(err) {
+        json_error_response.DefaultError(err, res);
+    }
+}
+
+const cheapestCost = (req,res, next) => {
+    try {
+        if (!req.query.deliveryPath) {
+            return res.status(400).json(json_error_response.IsRequired('deliveryPath'));
+        } 
+        const deliveryPath = req.query.deliveryPath;
+        if (deliveryPath.length != 3 || deliveryPath[1] !== '-' || !isNaN(deliveryPath[0]) || !isNaN(deliveryPath[2])) {
+            return res.status(400).json({message: "deliveryPath must be exactly 3 words in format (A-B). (A: starting destination, B: ending destination"});
+        }
+        cheapestCostPromise = deliveryRouteService.calculateCheapestCost(deliveryPath);
+        cheapestCostPromise.then((result) => {
+            if (result >= 0) {
+                return res.json({cheapestCost: result});
+            } else {
+                return res.status(400).json({message: "No Possible Path"});
+            }
+        }, (err) =>  {
+            json_error_response.DefaultError(err, res);
+        })
+    } catch(err) {
+        json_error_response.DefaultError(err, res);
+    }
+}
+
 module.exports = {
     create,
     getAllRoutes,
     getRouteById,
-    findRoute,
+    findCostByRoute,
+    possibleRoute,
     editRoute,
-    deleteRoute
+    deleteRoute,
+    cheapestCost
 }
