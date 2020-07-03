@@ -6,6 +6,9 @@ var router = express.Router();
 router.route('/findCostByRoute')
       .get(deliveryRouteController.findCostByRoute);
 
+router.route('/possibleRoute')
+      .get(deliveryRouteController.possibleRoute);
+
 router.route('/:id')
       .get(deliveryRouteController.getRouteById);
 

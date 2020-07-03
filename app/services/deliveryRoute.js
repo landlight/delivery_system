@@ -1,5 +1,6 @@
 const db = require('../../database');
 const ObjectId = require('mongodb').ObjectID;
+const Graph = require('../modals/Graph');
 
 const insertDeliveryRoute = async (deliveryRoute) => {
     return new Promise((resolve, reject) => {
@@ -119,10 +120,90 @@ const findRouteByCost = (query, size) => {
         }
     });
 }
+
+const calculateNoOfPossibleRoutes = (deliveryPath, maxStop, deliveryCost) => {
+    return new Promise((resolve, reject) => {
+        try {
+            let start = deliveryPath[0];
+            let end = deliveryPath[2];
+            let deliveryRouteCollection = db.get().collection('delivery_routes');
+            deliveryRouteCollection.find({})
+                .project({
+                    from_path: 1,
+                    to_path: 1,
+                    delivery_cost: 1
+                })
+                .toArray((err, results) => {
+                    if (err) {
+                        return reject(err);
+                    }
+                    let startingPaths = results.map(e => e.from_path);
+                    let destinationPaths = results.map(e => e.to_path);
+                    
+                    let combine = startingPaths;
+                    combine.concat(destinationPaths);
+                    let vertices = [...new Set(combine)];
+                    let g = new Graph();
+                    for (let i = 0; i < vertices.length; i++) {
+                        g.add(vertices[i], vertices[i]);
+                    }
+                    for (let i = 0; i < startingPaths.length; i++) {
+                        g.addEdge(startingPaths[i], destinationPaths[i], results[i].delivery_cost);
+                    }
+                    let possiblePathsArray = g.getAllPaths(start, end);
+                    const possiblePaths = possiblePathsArray.filter(e => e.path <= maxStop && e.cost <= deliveryCost).length;
+                    return resolve(possiblePaths);
+                });
+        } catch(err) {
+            return reject(err);
+        }
+    })
+}
+
+function dfs(startingNode){
+    let visited = this.createVisitedObject();
+    this.dfsHelper(startingNode, visited);
+}
+  
+function dfsHelper(startingNode, visited){
+    visited[startingNode] = true;
+    console.log(startingNode);
+  
+    let arr = this.AdjList.get(startingNode);
+  
+    for(let elem of arr){
+      if(!visited[elem]){
+        this.dfsHelper(elem, visited);
+      }
+    }
+}
 module.exports = {
     insertDeliveryRoute,
     find,
     updateCost,
     deleteById,
-    findRouteByCost
+    findRouteByCost,
+    calculateNoOfPossibleRoutes
 }
+
+//  TEST 
+ // g.add("A", "A")
+// g.add("B", "B")
+// g.add("C", "C")
+// g.add("D", "D")
+// g.add("E", "E")
+// g.add("F", "F")
+
+// g.addEdge("A", "B", 1)
+// g.addEdge("B", "E", 1)
+// g.addEdge("E", "F", 0.5)
+
+// g.addEdge("B", "F", 2)
+
+// g.addEdge("A", "C", 1)
+// g.addEdge("C", "F", 3)
+
+// g.addEdge("A", "D", 1)
+// g.addEdge("D", "F", 4)
+
+// g.getAllPaths("A", "F");

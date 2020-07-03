@@ -11,9 +11,9 @@ const create = async (req, res, next) => {
         if (!req.body.deliveryRoute) {
             return res.status(400).json(json_error_response.IsRequired('deliveryRoute'));
         }
-        let errorMessage = "deliveryRoute must be at least 3 characters " +
-                        "and of format AB3 (first and second (locations) " +
-                        "are characters follow by number (distance cost)).";
+        const errorMessage = "deliveryRoute must be at least 3 characters " +
+                             "and of format AB3 (first and second (locations) " +
+                             "are characters follow by number (distance cost)).";
         let deliveryRoute = req.body.deliveryRoute;
         if (deliveryRoute.length < 3 || 
             !isNaN(deliveryRoute.charAt(0)) || 
@@ -98,7 +98,7 @@ const findCostByRoute = async (req, res, next) => {
         if (!req.query.deliveryPath) {
             return res.status(400).json(json_error_response.IsRequired('deliveryPath'));
         }
-        let errorMessage = "deliveryPath must be in formats such as A-B, A-B-C, A-B-C-D and the values must be characters";
+        const errorMessage = "deliveryPath must be in formats such as A-B, A-B-C, A-B-C-D and the values must be characters";
         const deliveryPath = req.query.deliveryPath;
         if (deliveryPath.length <= 1 || deliveryPath.length % 2 == 0){
             return res.status(400).json({message: errorMessage});    
@@ -203,11 +203,46 @@ const deleteRoute = async (req, res, next) => {
     }
 }
 
+const possibleRoute = (req, res, next) => {
+    try {
+        let max = Number.MAX_SAFE_INTEGER;
+        let deliverCost = Number.MAX_SAFE_INTEGER;
+        if (req.query.maximumStop) {
+            if (isNaN(req.query.maximumStop)) {
+                return res.status(400).json(json_error_response.IsNotObject('maximumStop', 'Integer'));
+            }
+            max = parseInt(req.query.maximumStop);
+        }
+        if (req.query.deliveryCost) {
+            if (isNaN(req.query.deliveryCost)) {
+                return res.status(400).json(json_error_response.IsNotObject('deliveryCost', 'Integer'));
+            }
+            deliverCost = parseInt(req.query.deliveryCost);
+        }
+        if (!req.query.deliveryPath) {
+            return res.status(400).json(json_error_response.IsRequired('deliveryPath'));
+        } 
+        const deliveryPath = req.query.deliveryPath;
+        if (deliveryPath.length != 3 || deliveryPath[1] !== '-' || !isNaN(deliveryPath[0]) || !isNaN(deliveryPath[2])) {
+            return res.status(400).json({message: "deliveryPath must be exactly 3 words in format (A-B). (A: starting destination, B: ending destination"});
+        }
+        possibleRoutePromise = deliveryRouteService.calculateNoOfPossibleRoutes(deliveryPath, max, deliverCost);
+        possibleRoutePromise.then((result) => {
+            return res.json({possiblePaths: result});
+        }, (err) =>  {
+            json_error_response.DefaultError(err, res);
+        })
+    } catch(err) {
+        json_error_response.DefaultError(err, res);
+    }
+}
+
 module.exports = {
     create,
     getAllRoutes,
     getRouteById,
     findCostByRoute,
+    possibleRoute,
     editRoute,
     deleteRoute
 }
