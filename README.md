@@ -166,3 +166,22 @@
     "possiblePaths": 4
   }
   ```
+
+### Find CheapestCost (CASE 3)
+- GET /api/deliveryRoute/cheapestCost
+  
+  ### Input query
+  ```
+  { 
+    "deliveryPath": "E-D", (REQUIRED)
+  } 
+  ```
+
+  ### Success
+  Status Code: 200
+  Result : Success => Possible Paths
+  ```
+  {
+    "cheapestCost": 9
+  }
+  ```
