@@ -6,6 +6,7 @@ class Graph {
       this.vertices = {};
       this.numberOfVertices = 0;
       this.dfsArray = [];
+      this.count = 0;
     }
     
     add(key, data) {
@@ -33,27 +34,38 @@ class Graph {
 
     dfs(currVertex, destVertex, visited, path, fullPath) {
         let vertex = this.vertices[currVertex];
-        // console.log(visited, "visited");
         visited.push(currVertex);
         
-        // if (path.includes(vertex.getData())) {
-        //     let previousIndex = path.indexOf(vertex.getData());
-        //     if (path[previousIndex - 1] != path[path.length-1]) {
-        //         path.push(vertex.getData());
-        //     }
-        // } else {
-        path.push(vertex.getData());
-        // }
-        if (currVertex == destVertex) {
-            console.log(path);
-            fullPath.push({path: path.length, cost: vertex.currCost});
+        if (path.includes(vertex.getData())) {
+            let previousIndex = path.indexOf(vertex.getData());
+            if (path[previousIndex - 1] != path[path.length-1]) {
+                path.push(vertex.getData());
+            }
+        } else {
+            path.push(vertex.getData());
         }
-        let connection = vertex.getConnections();
-        for (let i in connection) {    
-            let adjItem = connection[i];
-            if (!visited.includes(adjItem)) {
-                this.vertices[adjItem].setCurrCost(vertex.getCost(adjItem) + vertex.getCurrCost());
-                this.dfs(adjItem, destVertex, visited, path, fullPath);
+        if (currVertex == destVertex) {
+            if (vertex.currCost != 0) {
+                console.log(path, vertex.currCost);
+                fullPath.push({path: path.length, cost: vertex.currCost});
+            }
+        } else {
+            let connection = vertex.getConnections();
+            for (let i in connection) {    
+                let adjItem = connection[i];
+                if (this.isVisited(visited, adjItem)) {
+                    this.vertices[adjItem].setCurrCost(vertex.getCost(adjItem) + vertex.getCurrCost());
+                    this.count++;
+                    if (this.count == 3000) {
+                        setTimeout(() => {
+                            // give 5 sec to clear the stack
+                            this.count = 0; 
+                            this.dfs(adjItem, destVertex, visited, path, fullPath);
+                        }, 5000)
+                    } else {
+                        this.dfs(adjItem, destVertex, visited, path, fullPath);
+                    }
+                }
             }
         }
         path.pop();
@@ -61,6 +73,17 @@ class Graph {
         if (path.length == 0) {
             return fullPath;
         }
+    }
+
+    // new logic for visited: existing path should not cross again
+    isVisited(visited, item) {
+        if (visited.includes(item)) {
+            let previousIndex = visited.lastIndexOf(item);
+            if (visited[previousIndex - 1] === visited[visited.length-1]) {
+                return false;
+            }
+        }
+        return true;
     }
 }
 

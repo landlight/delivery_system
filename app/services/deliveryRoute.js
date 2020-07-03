@@ -150,9 +150,28 @@ const calculateNoOfPossibleRoutes = (deliveryPath, maxStop, deliveryCost) => {
                     for (let i = 0; i < startingPaths.length; i++) {
                         g.addEdge(startingPaths[i], destinationPaths[i], results[i].delivery_cost);
                     }
-                    let possiblePathsArray = g.getAllPaths(start, end);
-                    const possiblePaths = possiblePathsArray.filter(e => e.path <= maxStop && e.cost <= deliveryCost).length;
-                    return resolve(possiblePaths);
+                    // Case 2.2 
+                    if (start == end) {
+                        let vertex = g.vertices[start];
+                        let newStartPointList = vertex.getConnections();
+                        let possiblePathsArray = []
+                        for (let i in newStartPointList) {
+                            let cost = vertex.getCost(newStartPointList[i]);
+                            let paths = g.getAllPaths(newStartPointList[i], end);
+                            for (let j in paths) {
+                                paths[j].path = paths[j].path + 1;
+                                paths[j].cost = paths[j].cost + cost;
+                                possiblePathsArray.push(paths[j]);
+                            }
+                        }
+                        const possiblePaths = possiblePathsArray.filter(e => e.path <= (maxStop + 1) && e.cost <= deliveryCost).length;
+                        return resolve(possiblePaths);
+                    } else {
+                        // Case 2.1 
+                        let possiblePathsArray = g.getAllPaths(start, end);
+                        const possiblePaths = possiblePathsArray.filter(e => e.path <= (maxStop + 1) && e.cost <= deliveryCost).length;
+                        return resolve(possiblePaths);
+                    }
                 });
         } catch(err) {
             return reject(err);
@@ -160,23 +179,6 @@ const calculateNoOfPossibleRoutes = (deliveryPath, maxStop, deliveryCost) => {
     })
 }
 
-function dfs(startingNode){
-    let visited = this.createVisitedObject();
-    this.dfsHelper(startingNode, visited);
-}
-  
-function dfsHelper(startingNode, visited){
-    visited[startingNode] = true;
-    console.log(startingNode);
-  
-    let arr = this.AdjList.get(startingNode);
-  
-    for(let elem of arr){
-      if(!visited[elem]){
-        this.dfsHelper(elem, visited);
-      }
-    }
-}
 module.exports = {
     insertDeliveryRoute,
     find,

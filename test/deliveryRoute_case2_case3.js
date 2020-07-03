@@ -46,6 +46,12 @@ describe('Create Data for testing case 2 and case 3', () => {
                 });
                 chai.request(server)
                     .post('/api/deliveryRoute')
+                    .send({deliveryRoute: "CF2"})
+                    .end((err, res) => {
+                    res.should.have.status(200);
+                });
+                chai.request(server)
+                    .post('/api/deliveryRoute')
                     .send({deliveryRoute: "DE1"})
                     .end((err, res) => {
                     res.should.have.status(200);
