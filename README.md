@@ -1,4 +1,4 @@
-# eko delivery_system
+# Delivery System
 
 ## Prerequisites
 - install mongodb  (https://docs.mongodb.com/manual/administration/install-community/)
