@@ -13,6 +13,7 @@ chai.use(chaiHttp);
 describe('Create Data for testing case 2 and case 3', () => {
     before((done) => { //Before each test we empty the database
         setTimeout(function() {
+            console.log("PLEASE WAIT 8 SEC TO SET UP THE DATA");
             db.get().dropDatabase(() => {
                 chai.request(server)
                     .post('/api/deliveryRoute')
@@ -76,7 +77,7 @@ describe('Create Data for testing case 2 and case 3', () => {
                     done();
                 });
             })
-        }, 5000); 
+        }, 8000); 
     });
     
     describe('Tests for Case 2  /api/deliveryRoute/findCostByRoute', () => { 
@@ -146,7 +147,7 @@ describe('Create Data for testing case 2 and case 3', () => {
                 done();
             });
         })
-        it('2.6 deliveryCost input error => expect fail', (done) => {
+        it('2.7 deliveryCost input error => expect fail', (done) => {
             chai.request(server)
                 .get('/api/deliveryRoute/possibleRoute')
                 .query({deliveryPath: "A-B", deliveryCost: "A"})
@@ -157,7 +158,7 @@ describe('Create Data for testing case 2 and case 3', () => {
                 done();
             });
         })
-        it('2.7 Test Case 2.1 => expect pass', (done) => {
+        it('2.8 Test Case 2.1 => expect pass', (done) => {
             chai.request(server)
                 .get('/api/deliveryRoute/possibleRoute')
                 .query({deliveryPath: "E-D", maximumStop: 4})
@@ -168,7 +169,7 @@ describe('Create Data for testing case 2 and case 3', () => {
                 done();
             });
         })
-        it('2.8 Test Case 2.2 => expect pass', (done) => {
+        it('2.9 Test Case 2.2 => expect pass', (done) => {
             chai.request(server)
                 .get('/api/deliveryRoute/possibleRoute')
                 .query({deliveryPath: "E-E"})
@@ -179,7 +180,7 @@ describe('Create Data for testing case 2 and case 3', () => {
                 done();
             });
         })
-        it('2.9 Self Test Case Delivery Cost => expect pass', (done) => {
+        it('2.10 Self Test Case Delivery Cost => expect pass', (done) => {
             chai.request(server)
                 .get('/api/deliveryRoute/possibleRoute')
                 .query({deliveryPath: "E-D", maximumStop: 4, deliveryCost: 16})
@@ -190,7 +191,7 @@ describe('Create Data for testing case 2 and case 3', () => {
                 done();
             });
         })
-        it('2.10 Self Test Case Delivery Cost => No Route => expect pass', (done) => {
+        it('2.11 Self Test Case Delivery Cost => No Route => expect pass', (done) => {
             chai.request(server)
                 .get('/api/deliveryRoute/possibleRoute')
                 .query({deliveryPath: "A-G", maximumStop: 4, deliveryCost: 16})

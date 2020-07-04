@@ -98,22 +98,25 @@ const deleteById = (id) => {
     })
 }
 
-const findRouteByCost = (query, size) => {
+const findRouteByCost = (query) => {
     return new Promise((resolve, reject) => {
         try {
             let deliveryRouteCollection = db.get().collection('delivery_routes');
             deliveryRouteCollection.find(query)
-                .project({delivery_cost: 1})
                 .toArray((err, results) => {
                 if (err) {
                     return reject(err);
                 }
-                if (results.length != size) {
-                    return resolve({message: "No Such Route"});
-                } else {
-                    let cost = results.map(e => e.delivery_cost).reduce((a, b) => a + b, 0);
-                    return resolve(cost);
+                let allPaths = query.$or;
+                let deliveryCost = 0;
+                for (var i in allPaths) {
+                    let found = results.find(e => e.from_path == allPaths[i].from_path && e.to_path == allPaths[i].to_path);
+                    if (!found) {
+                        return resolve({message: "No Such Route"});
+                    }
+                    deliveryCost += found.delivery_cost;
                 }
+                return resolve(deliveryCost);
             });
         } catch(err) {
             return reject(err);

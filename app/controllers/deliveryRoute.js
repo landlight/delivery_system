@@ -123,7 +123,7 @@ const findCostByRoute = async (req, res, next) => {
                 }
             }
         }
-        let findRouteByCostPromise = deliveryRouteService.findRouteByCost(query, pathSize);
+        let findRouteByCostPromise = deliveryRouteService.findRouteByCost(query);
         findRouteByCostPromise.then((cost) => {
             if (cost.message) {
                 return res.status(400).json({message: cost.message});
