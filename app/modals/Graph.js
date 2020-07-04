@@ -40,7 +40,7 @@ class Graph {
         return this.dfsArray;
     }
 
-    dfs(currVertex, destVertex, visited, path, fullPath, bonus = false) {
+    dfs(currVertex, destVertex, visited, path, fullPath ) {
         let vertex = this.vertices[currVertex];
         if (!vertex) {
             return fullPath;
@@ -48,14 +48,8 @@ class Graph {
         visited.push(currVertex);
         
         if (path.includes(vertex.getData())) {
-            if (!bonus) {
-                if (this.isVisited(path, vertex.getData())) {
-                    path.push(vertex.getData());    
-                }
-            } else {
-                if (this.isDoubleVisit(path, vertex.getData())) {
-                    path.push(vertex.getData())
-                }
+            if (this.isVisited(path, vertex.getData())) {
+                path.push(vertex.getData());    
             }
         } else {
             path.push(vertex.getData());
@@ -70,14 +64,8 @@ class Graph {
             let connection = vertex.getConnections();
             for (let i in connection) {    
                 let adjItem = connection[i];
-                if (!bonus) {
-                    if (this.isVisited(visited, adjItem)) {
-                        this.calculateCostAndDFS(adjItem, vertex, destVertex, visited, path, fullPath, bonus);
-                    }
-                } else {
-                    if (this.isDoubleVisit(visited, adjItem)) {
-                        this.calculateCostAndDFS(adjItem, vertex, destVertex, visited, path, fullPath, bonus);
-                    }
+                if (this.isVisited(visited, adjItem)) {
+                    this.calculateCostAndDFS(adjItem, vertex, destVertex, visited, path, fullPath);
                 }
             }
         }
