@@ -4,6 +4,7 @@ class Vertex {
         this.key = key;
         this.data = data;
         this.currCost = 0;
+        this.lastCurrCost = 0;
     }
     
     connect(otherVertex, weight) {
@@ -28,6 +29,14 @@ class Vertex {
 
     getData() {
         return this.data;
+    }
+
+    getLastCurrCost() {
+        return this.lastCurrCost;
+    }
+
+    setLastCurrCost(lastCurrCost) {
+        this.lastCurrCost = lastCurrCost;
     }
 }
 

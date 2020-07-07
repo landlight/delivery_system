@@ -37,7 +37,7 @@ class Graph {
     // Bonus
     getAllPathsDoubleVisit(start, end, path, visited) {
         this.dfsArray = [];
-        this.dfsDouble(start, end, path, visited, this.dfsArray);    
+        this.dfsDouble(start, end, path, visited, this.dfsArray, 0);    
         return this.dfsArray;
     }
 
@@ -93,8 +93,19 @@ class Graph {
         }
         if (currVertex == destVertex && vertex.currCost != 0) {
             // Print the following line if required to see the stops
-            // console.log(path, vertex.currCost);
+            if (vertex.currCost < 20) {
+                console.log(path, vertex.currCost, vertex.getLastCurrCost());
+            }
             fullPath.push({path: path.length, cost: vertex.currCost});
+            if (!this.isDoubleVisit(visited, destVertex)) {
+                let connection = vertex.getConnections();
+                for (let i in connection) {    
+                    let adjItem = connection[i];
+                    if (this.isDoubleVisit(visited, adjItem)) {
+                        this.calculateCostAndDFS(adjItem, vertex, destVertex, visited, path, fullPath, true);
+                    } 
+                }
+            }
         } 
         let connection = vertex.getConnections();
         for (let i in connection) {    
@@ -102,6 +113,11 @@ class Graph {
             if (this.isDoubleVisit(visited, adjItem)) {
                 this.calculateCostAndDFS(adjItem, vertex, destVertex, visited, path, fullPath, true);
             } 
+        }
+        if (vertex.currCost - vertex.getLastCurrCost() > 0) {
+            console.log(vertex, 'v');
+            // vertex.setCurrCost(vertex.getCurrCost() - vertex.getLastCurrCost());
+            // vertex.setLastCurrCost(0);
         }
         path.pop();
         visited.pop();
@@ -111,7 +127,17 @@ class Graph {
     }
 
     calculateCostAndDFS(adjItem, vertex, destVertex, visited, path, fullPath, double) {
-        this.vertices[adjItem].setCurrCost(vertex.getCost(adjItem) + vertex.getCurrCost());
+        if (this.vertices[adjItem].getCurrCost() != 0) {
+            // console.log('vertex adj');
+            // console.log(vertex.getCost(adjItem), adjItem, "AA");
+            // console.log(vertex.getCurrCost(), vertex, "pop")
+            this.vertices[adjItem].setLastCurrCost(this.vertices[adjItem].getCurrCost());
+            this.vertices[adjItem].setCurrCost(vertex.getCost(adjItem) + vertex.getCurrCost());
+        } else {
+            this.vertices[adjItem].setCurrCost(vertex.getCost(adjItem) + vertex.getCurrCost() - vertex.getLastCurrCost());
+            this.vertices[adjItem].setLastCurrCost(vertex.getCurrCost() - vertex.getLastCurrCost());
+        }
+    
         this.count++;
         if (this.count == 3000) {
             setTimeout(() => {
