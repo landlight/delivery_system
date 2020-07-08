@@ -11,7 +11,7 @@
 ## TEST
 - npm run test
 - npm run test1 (test cases for case 1)
-- npm run test23 (test cases for case 3)
+- npm run test23 (test cases for case 2 and 3)
 
 ### Status Codes
 200 - Success
