@@ -20,6 +20,7 @@ const insertDeliveryRoute = async (deliveryRoute) => {
 }
 
 const find = (deliveryRoute) => {
+    console.log("Hello");
     return new Promise((resolve, reject) => {
         try { 
             let deliveryRouteCollection = db.get().collection('delivery_routes');
